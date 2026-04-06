@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>跨越东与西马的婚礼</title>
+
+<style>
+#coverVideo {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+body {
+    margin: 0;
+    font-family: "Microsoft YaHei", sans-serif;
+    background: #000;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+/* 🎬 背景视频 */
+#bgVideo {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+    opacity: 1;
+    transition: opacity 1.5s;
+}
+
+/* 开场 */
+#cover {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    flex-direction: column;
+}
+
+#enterBtn {
+    padding: 15px 30px;
+    background: #ff4d6d;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+.french {
+    font-size: 16px;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.7);
+    font-style: italic;
+}
+
+.names {
+    font-size: 20px;
+    margin: 10px 0;
+}
+
+/* 字幕 */
+#subtitle {
+    position: fixed;
+    width: 100%;
+    top: 45%;
+    text-align: center;
+    font-size: 26px;
+    opacity: 0;
+    transition: opacity 1.5s;
+    z-index: 10;
+}
+
+/* hero */
+.hero {
+    height: 100vh;
+    position: relative;
+}
+
+.hero .text {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    text-align: center;
+}
+
+/* 内容 */
+.section {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.gallery img {
+    width: 90%;
+    max-width: 350px;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.button {
+    padding: 12px 25px;
+    background: #ff4d6d;
+    border-radius: 25px;
+    color: white;
+    text-decoration: none;
+}
+
+#countdown {
+    font-size: 28px;
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🎬 主背景视频 -->
+<video id="bgVideo" autoplay muted loop playsinline src="airport2.mp4"></video>
+
+<!-- 🎬 开场 -->
+<div id="cover">
+
+    <video id="coverVideo" autoplay muted loop playsinline src="airport2.mp4"></video>
+
+    <div id="subtitle"></div>
+    <p class="french">Un amour qui traverse les océans</p>
+    <p class="names">Albert Ling & Yee Jia Ler</p>
+    <h1>💍 一场跨越东与西马的婚礼 💍</h1>
+    <div id="enterBtn" onclick="enter()">点击和我们一起见证</div>
+
+</div>
+
+<div class="hero">
+    <div class="text">
+        <h1>林养维 ❤️ 余佳乐</h1>
+        <p>从偶然认识，到相遇，到携手步入婚姻殿堂，到一生相守 ✈️</p>
+    </div>
+</div>
+
+<div class="section">
+    <h2>婚礼倒计时</h2>
+    <div id="countdown"></div>
+</div>
+
+<div class="section">
+    <h2>我们的故事</h2>
+    <p>那一天，在机场人群中遇见你</p>
+    <p>从此人生航线改变</p>
+    <p>我们决定，一起飞向未来 ❤️</p>
+</div>
+
+<div class="section gallery">
+    <h2>我们的回忆</h2>
+    <img src="photo1.jpg">
+    <img src="photo2.jpg">
+    <img src="photo3.jpg">
+</div>
+
+<div class="section">
+    <h2>婚礼信息</h2>
+    <p>📅 2026年10月3日</p>
+    <p>⏰ 下午6:30</p>
+    <p>📍 诗巫旺囍楼餐厅</p>
+    <br>
+    <a class="button" href="https://maps.app.goo.gl/r8DzRaRdrY2T66y5A" target="_blank">查看地图</a>
+</div>
+
+<div class="section">
+    <h2>联系我们</h2>
+    <a class="button" href="https://wa.me/601111202284" target="_blank">点击联系 WhatsApp</a>
+</div>
+
+<audio id="music" loop>
+    <source src="music.mp3">
+</audio>
+
+<script>
+
+let videos = ["airport2.mp4","airport4.mp4","airport3.mp4"];
+let current = 0;
+
+function enter() {
+    document.getElementById("cover").style.display = "none";
+    document.getElementById("music").play();
+
+    setTimeout(playSubtitles, 1000);
+    setTimeout(switchVideo, 5000);
+}
+
+function switchVideo() {
+    let video = document.getElementById("bgVideo");
+    current++;
+
+    if (current < videos.length) {
+        video.style.opacity = 0;
+
+        setTimeout(() => {
+            video.src = videos[current];
+            video.play().catch(()=>{});
+            video.style.opacity = 1;
+        }, 1000);
+
+        setTimeout(switchVideo, 5000);
+    }
+}
+
+let subtitles = [
+"Un amour qui traverse les océans",
+"一段跨越海洋的爱情",
+"在世界的两端",
+"我们各自生活着",
+"直到命运让我们相遇 ✈️",
+"这一刻，一切改变",
+"跨越东与西马",
+"只为与你相遇 ❤️"
+];
+
+let index = 0;
+
+function playSubtitles() {
+    let el = document.getElementById("subtitle");
+
+    if (index < subtitles.length) {
+        el.innerHTML = subtitles[index];
+        el.style.opacity = 1;
+
+        setTimeout(() => {
+            el.style.opacity = 0;
+            index++;
+            setTimeout(playSubtitles, 2000);
+        }, 2500);
+    }
+}
+
+var targetDate = new Date("2026-10-03").getTime();
+
+setInterval(function() {
+    var now = new Date().getTime();
+    var diff = targetDate - now;
+    var days = Math.floor(diff / (1000*60*60*24));
+    document.getElementById("countdown").innerHTML = days + " 天";
+},1000);
+
+</script>
+
+</body>
+</html>
