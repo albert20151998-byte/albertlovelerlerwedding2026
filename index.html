@@ -6,6 +6,8 @@
 <title>跨越东与西马的婚礼</title>
 
 <style>
+
+/* 🎬 开场视频 */
 #coverVideo {
     position: absolute;
     width: 100%;
@@ -29,7 +31,6 @@ body {
     height: 100%;
     object-fit: cover;
     z-index: -2;
-    opacity: 1;
     transition: opacity 1.5s;
 }
 
@@ -38,31 +39,38 @@ body {
     position: fixed;
     width: 100%;
     height: 100%;
-    background: transparent;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 999;
     flex-direction: column;
+
+    background: black;
 }
 
 #enterBtn {
-    padding: 15px 30px;
+    padding: 12px 25px;
     background: #ff4d6d;
     border-radius: 30px;
     cursor: pointer;
 }
 
+/* 字体优化 */
+.title {
+    font-size: 26px;
+    text-align: center;
+    padding: 0 20px;
+}
+
 .french {
     font-size: 16px;
-    letter-spacing: 4px;
+    letter-spacing: 3px;
     color: rgba(255,255,255,0.7);
     font-style: italic;
 }
 
 .names {
-    font-size: 20px;
-    margin: 10px 0;
+    font-size: 18px;
 }
 
 /* 字幕 */
@@ -71,10 +79,9 @@ body {
     width: 100%;
     top: 45%;
     text-align: center;
-    font-size: 26px;
+    font-size: 24px;
     opacity: 0;
     transition: opacity 1.5s;
-    z-index: 10;
 }
 
 /* hero */
@@ -96,11 +103,32 @@ body {
     text-align: center;
 }
 
-.gallery img {
-    width: 90%;
-    max-width: 350px;
-    margin: 10px;
-    border-radius: 10px;
+/* 📸 滑动相册（不变形版🔥） */
+.slider {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding: 20px;
+    scroll-snap-type: x mandatory;
+}
+
+.slider img {
+    width: 220px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 15px;
+    flex-shrink: 0;
+    scroll-snap-align: center;
+    transition: transform 0.3s;
+}
+
+.slider img:hover {
+    transform: scale(1.05);
+}
+
+/* 隐藏滚动条 */
+.slider::-webkit-scrollbar {
+    display: none;
 }
 
 .button {
@@ -112,26 +140,57 @@ body {
 }
 
 #countdown {
-    font-size: 28px;
+    font-size: 26px;
     margin-top: 20px;
+}
+
+/* 📱 手机优化 */
+@media (max-width: 768px) {
+
+    .title {
+        font-size: 20px;
+    }
+
+    .names {
+        font-size: 16px;
+    }
+
+    .french {
+        font-size: 13px;
+    }
+
+    #enterBtn {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+
+    #subtitle {
+        font-size: 18px;
+    }
+
+    .slider img {
+        width: 160px;
+        height: 220px;
+    }
+
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🎬 主背景视频 -->
+<!-- 🎬 背景视频 -->
 <video id="bgVideo" autoplay muted loop playsinline src="airport2.mp4"></video>
 
 <!-- 🎬 开场 -->
 <div id="cover">
 
-    <video id="coverVideo" autoplay muted loop playsinline src="airport2.mp4"></video>
+    <video id="coverVideo" autoplay muted loop playsinline src="airport.mp4"></video>
 
     <div id="subtitle"></div>
     <p class="french">Un amour qui traverse les océans</p>
     <p class="names">Albert Ling & Yee Jia Ler</p>
-    <h1>💍 一场跨越东与西马的婚礼 💍</h1>
+    <h1 class="title">💍 一场跨越东与西马的婚礼 💍</h1>
     <div id="enterBtn" onclick="enter()">点击和我们一起见证</div>
 
 </div>
@@ -140,6 +199,9 @@ body {
     <div class="text">
         <h1>林养维 ❤️ 余佳乐</h1>
         <p>从偶然认识，到相遇，到携手步入婚姻殿堂，到一生相守 ✈️</p>
+        <p>这726天走来，有笑，有泪，有苦，有乐，虽然难，可我们还是走过来了 ❤️</p>
+        <p>2026年5月31日 · 我们的婚礼见 ❤️</p>
+
     </div>
 </div>
 
@@ -155,20 +217,40 @@ body {
     <p>我们决定，一起飞向未来 ❤️</p>
 </div>
 
-<div class="section gallery">
+<!-- 📸 滑动相册 -->
+<div class="section">
     <h2>我们的回忆</h2>
-    <img src="photo1.jpg">
-    <img src="photo2.jpg">
-    <img src="photo3.jpg">
+
+    <div class="slider">
+        <img src="photo1.jpg">
+        <img src="photo2.jpg">
+        <img src="photo3.jpg">
+        <img src="photo4.jpg">
+        <img src="photo5.jpg">
+        <img src="photo6.jpg">
+        <img src="photo7.jpg">
+        <img src="photo8.jpg">
+        <img src="photo9.jpg">
+        <img src="photo10.jpg">
+        <img src="photo11.jpg">
+        <img src="photo12.jpg">
+        <img src="photo13.jpg">
+        <img src="photo14.jpg">
+        <img src="photo15.jpg">
+        <img src="photo16.jpg">
+        <img src="photo17.jpg">
+        <img src="photo18.jpg">
+    </div>
+
 </div>
 
 <div class="section">
     <h2>婚礼信息</h2>
-    <p>📅 2026年10月3日</p>
+    <p>📅 2026年05月31日</p>
     <p>⏰ 下午6:30</p>
-    <p>📍 诗巫旺囍楼餐厅</p>
+    <p>📍 马六甲露夜圆酒家宴会厅</p>
     <br>
-    <a class="button" href="https://maps.app.goo.gl/r8DzRaRdrY2T66y5A" target="_blank">查看地图</a>
+    <a class="button" href="https://ul.waze.com/ul?place=ChIJ10btBdnx0TERfBNxQY7KN6E&ll=2.19908730%2C102.23466330&navigate=yes&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location" target="_blank">查看地图</a>
 </div>
 
 <div class="section">
@@ -186,7 +268,13 @@ let videos = ["airport2.mp4","airport4.mp4","airport3.mp4"];
 let current = 0;
 
 function enter() {
-    document.getElementById("cover").style.display = "none";
+    let cover = document.getElementById("cover");
+
+    cover.style.opacity = 0;
+    setTimeout(() => {
+        cover.remove();   // ⭐彻底删除，不是隐藏
+    }, 800);
+
     document.getElementById("music").play();
 
     setTimeout(playSubtitles, 1000);
@@ -238,7 +326,7 @@ function playSubtitles() {
     }
 }
 
-var targetDate = new Date("2026-10-03").getTime();
+var targetDate = new Date("2026-05-31T18:30:00").getTime();
 
 setInterval(function() {
     var now = new Date().getTime();
@@ -247,6 +335,36 @@ setInterval(function() {
     document.getElementById("countdown").innerHTML = days + " 天";
 },1000);
 
+let slider = document.querySelector('.slider');
+
+let isDown = false;
+let startX;
+let scrollLeft;
+
+slider.addEventListener('mousedown', (e) => {
+    isDown = true;
+    slider.style.cursor = 'grabbing';
+    startX = e.pageX - slider.offsetLeft;
+    scrollLeft = slider.scrollLeft;
+});
+
+slider.addEventListener('mouseleave', () => {
+    isDown = false;
+    slider.style.cursor = 'grab';
+});
+
+slider.addEventListener('mouseup', () => {
+    isDown = false;
+    slider.style.cursor = 'grab';
+});
+
+slider.addEventListener('mousemove', (e) => {
+    if(!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - slider.offsetLeft;
+    const walk = (x - startX) * 2;
+    slider.scrollLeft = scrollLeft - walk;
+});
 </script>
 
 </body>
