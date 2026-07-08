@@ -6,16 +6,6 @@
 <title>跨越东与西马的婚礼</title>
 
 <style>
-
-/* 🎬 开场视频 */
-#coverVideo {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
-}
-
 body {
     margin: 0;
     font-family: "Microsoft YaHei", sans-serif;
@@ -24,19 +14,36 @@ body {
     overflow-x: hidden;
 }
 
-/* 🎬 背景视频 */
-#bgVideo {
+/* 🖼️ 双层背景容器：彻底解决切换闪烁和黑屏问题 */
+.bg-slideshow {
     position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
     z-index: -2;
-    transition: opacity 1.5s;
+    background-size: cover;
+    background-position: center;
+    opacity: 0; 
+    transition: opacity 1.8s ease-in-out; /* 平滑淡入淡出 */
 }
 
-/* 开场 */
+/* 半透明黑色遮罩，确保前面的所有文字在任何背景下都清晰可见 */
+.bg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: rgba(0, 0, 0, 0.45); 
+}
+
+/* 🎬 开场封面容器 */
 #cover {
     position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     display: flex;
@@ -44,36 +51,48 @@ body {
     align-items: center;
     z-index: 999;
     flex-direction: column;
-
     background: black;
+    transition: opacity 0.8s ease;
 }
 
-#enterBtn {
-    padding: 12px 25px;
-    background: #ff4d6d;
-    border-radius: 30px;
-    cursor: pointer;
+#coverVideo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
 }
 
-/* 字体优化 */
-.title {
-    font-size: 26px;
+.cover-content {
+    z-index: 1001;
     text-align: center;
     padding: 0 20px;
 }
 
-.french {
+#enterBtn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 30px;
+    background: #ff4d6d;
+    border-radius: 30px;
+    cursor: pointer;
     font-size: 16px;
-    letter-spacing: 3px;
-    color: rgba(255,255,255,0.7);
-    font-style: italic;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(255, 77, 109, 0.5);
+    transition: transform 0.2s;
 }
 
-.names {
-    font-size: 18px;
+#enterBtn:active {
+    transform: scale(0.95);
 }
 
-/* 字幕 */
+/* 字体与排版 */
+.title { font-size: 26px; text-align: center; text-shadow: 2px 2px 8px rgba(0,0,0,0.8); }
+.french { font-size: 16px; letter-spacing: 3px; color: rgba(255,255,255,0.8); font-style: italic; text-shadow: 2px 2px 8px rgba(0,0,0,0.8); }
+.names { font-size: 18px; text-shadow: 2px 2px 8px rgba(0,0,0,0.8); }
+
 #subtitle {
     position: fixed;
     width: 100%;
@@ -82,36 +101,40 @@ body {
     font-size: 24px;
     opacity: 0;
     transition: opacity 1.5s;
+    z-index: 10;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.9);
 }
 
-/* hero */
-.hero {
-    height: 100vh;
-    position: relative;
-}
-
+.hero { height: 100vh; position: relative; }
 .hero .text {
     position: absolute;
     top: 40%;
     width: 100%;
     text-align: center;
+    padding: 0 20px;
+    box-sizing: border-box;
 }
+.hero .text h1, .hero .text p { text-shadow: 2px 2px 8px rgba(0,0,0,0.8); }
 
-/* 内容 */
 .section {
     padding: 60px 20px;
     text-align: center;
+    background: rgba(0, 0, 0, 0.5); 
+    backdrop-filter: blur(3px); 
+    border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-/* 📸 滑动相册（不变形版🔥） */
+/* 📸 滑动相册 */
 .slider {
     display: flex;
     overflow-x: auto;
     gap: 15px;
     padding: 20px;
     scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    cursor: grab;
 }
-
 .slider img {
     width: 220px;
     height: 300px;
@@ -120,88 +143,82 @@ body {
     flex-shrink: 0;
     scroll-snap-align: center;
     transition: transform 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
 }
+.slider::-webkit-scrollbar { display: none; }
 
-.slider img:hover {
-    transform: scale(1.05);
-}
-
-/* 隐藏滚动条 */
-.slider::-webkit-scrollbar {
+/* 🔍 点击放大全屏灯箱 */
+#lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10000;
     display: none;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
+#lightbox img {
+    max-width: 90%;
+    max-height: 85%;
+    border-radius: 8px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.8);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+#lightbox.active { display: flex; opacity: 1; }
+#lightbox.active img { transform: scale(1); }
 
 .button {
+    display: inline-block;
     padding: 12px 25px;
     background: #ff4d6d;
     border-radius: 25px;
     color: white;
     text-decoration: none;
+    margin-top: 10px;
 }
+#countdown { font-size: 26px; margin-top: 20px; font-weight: bold; color: #ff4d6d; }
 
-#countdown {
-    font-size: 26px;
-    margin-top: 20px;
-}
-
-/* 📱 手机优化 */
 @media (max-width: 768px) {
-
-    .title {
-        font-size: 20px;
-    }
-
-    .names {
-        font-size: 16px;
-    }
-
-    .french {
-        font-size: 13px;
-    }
-
-    #enterBtn {
-        font-size: 14px;
-        padding: 10px 20px;
-    }
-
-    #subtitle {
-        font-size: 18px;
-    }
-
-    .slider img {
-        width: 160px;
-        height: 220px;
-    }
-
+    .title { font-size: 20px; }
+    .names { font-size: 16px; }
+    .french { font-size: 13px; }
+    #enterBtn { font-size: 14px; padding: 10px 22px; }
+    #subtitle { font-size: 18px; }
+    .slider img { width: 160px; height: 220px; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🎬 背景视频 -->
-<video id="bgVideo" muted loop playsinline></video>
+<div id="bgSlideshow1" class="bg-slideshow"></div>
+<div id="bgSlideshow2" class="bg-slideshow"></div>
+<div class="bg-overlay"></div>
 
-<!-- 🎬 开场 -->
 <div id="cover">
-
     <video id="coverVideo" autoplay muted loop playsinline src="airport.mp4"></video>
-
-    <div id="subtitle"></div>
-    <p class="french">Un amour qui traverse les océans</p>
-    <p class="names">Albert Ling Yan Wey ❤️ Yee Jia Ler</p>
-    <h1 class="title">💍 一场跨越东与西马的婚礼 💍</h1>
-    <div id="enterBtn" onclick="enter()">点击和我们一起见证</div>
-
+    <div class="cover-content">
+        <p class="french">Un amour qui traverse les océans</p>
+        <p class="names">Albert Ling Yan Wey ❤️ Yee Jia Ler</p>
+        <h1 class="title">💍 一场跨越东与西马的婚礼 💍</h1>
+        <div id="enterBtn" onclick="enter()">点击和我们一起见证</div>
+    </div>
 </div>
+
+<div id="subtitle"></div>
 
 <div class="hero">
     <div class="text">
         <h1>林养维 ❤️ 余佳乐</h1>
         <p>从偶然认识，到相遇，到携手步入婚姻殿堂，到一生相守 ✈️</p>
-        <p>这726天走来，有笑，有泪，有苦，有乐，虽然难，可我们还是走过来了 ❤️</p>
-        <p>2026年5月31日 · 我们的婚礼见 ❤️</p>
-
+        <p>这840天走来，有笑，有泪，有苦，有乐，虽然难，可我们还是走过来了 ❤️</p>
+        <p>2026年10月03日 · 我们的婚礼见 ❤️</p>
     </div>
 </div>
 
@@ -217,10 +234,8 @@ body {
     <p>我们决定，一起飞向未来 ❤️</p>
 </div>
 
-<!-- 📸 滑动相册 -->
 <div class="section">
     <h2>我们的回忆</h2>
-
     <div class="slider">
         <img src="photo1.jpg">
         <img src="photo2.jpg">
@@ -235,21 +250,25 @@ body {
         <img src="photo11.jpg">
         <img src="photo12.jpg">
     </div>
+    <p style="font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 5px;">⬅️ 左右滑动查看，点击可放大欣赏 ➡️</p>
+</div>
 
+<div id="lightbox" onclick="closeLightbox()">
+    <img id="lightboxImg" src="" alt="放大图片">
 </div>
 
 <div class="section">
     <h2>婚礼信息</h2>
-    <p>📅 2026年05月31日</p>
+    <p>📅 2026年10月03日</p>
     <p>⏰ 下午6:30</p>
-    <p>📍 马六甲露夜圆酒家宴会厅</p>
+    <p>📍 Good Happiness Restaurant 旺喜楼</p>
     <br>
-    <a class="button" href="https://ul.waze.com/ul?place=ChIJ10btBdnx0TERfBNxQY7KN6E&ll=2.19908730%2C102.23466330&navigate=yes&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location" target="_blank">查看地图</a>
+    <a class="button" href="https://ul.waze.com/ul?place=ChIJ60wd_0t_9zERoWcKcSlND2g&ll=2.30733250%2C111.84923070&navigate=yes" target="_blank">查看地图</a>
 </div>
 
 <div class="section">
     <h2>联系我们</h2>
-    <a class="button" href="https://wa.me/601111202284" target="_blank">点击联系 WhatsApp</a>
+    <a class="button" href="https://wa.me/60146914560" target="_blank">点击联系 WhatsApp</a>
 </div>
 
 <audio id="music" loop>
@@ -257,61 +276,105 @@ body {
 </audio>
 
 <script>
+// 🖼️ 10张背景大图（确保带括号和空格的文件名在 CSS 中正常读取，代码已做单引号包裹兼容）
+let bgImages = [
+    "HH-MORNING (55).jpg", "HH-MORNING (58).jpg", "HH-MORNING (179).jpg", "HH-MORNING (188).jpg",
+    "HH-MORNING (256).jpg", "HH-MORNING (307).jpg", "HH-MORNING (321).jpg", "HH-MORNING (434).jpg",
+    "HH-MORNING (36).jpg", "HH-MORNING (38).jpg"
+];
 
-let videos = ["airport2.mp4","airport4.mp4","airport3.mp4"];
-let current = 0;
+let playlist = []; 
+let slideshowInterval;
+let isEntered = false; 
+let activeLayer = 1; 
 
-function enter() {
-    let cover = document.getElementById("cover");
+// 📦 自动预加载函数
+function preloadImages() {
+    for (let i = 0; i < bgImages.length; i++) {
+        let img = new Image();
+        img.src = bgImages[i];
+    }
+}
+preloadImages(); 
 
-    cover.style.opacity = 0;
-    setTimeout(() => {
-        cover.remove();   // ⭐彻底删除，不是隐藏
-    }, 800);
-
-    document.getElementById("music").play();
-
-    setTimeout(playSubtitles, 1000);
-    setTimeout(switchVideo, 5000);
+// 🎲 洗牌算法
+function createShufflePlaylist() {
+    let copy = [...bgImages];
+    for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
 }
 
-function switchVideo() {
-    let video = document.getElementById("bgVideo");
-    current++;
+function getNextImage() {
+    if (playlist.length === 0) {
+        playlist = createShufflePlaylist(); 
+    }
+    return playlist.pop(); 
+}
 
-    if (current < videos.length) {
-        video.style.opacity = 0;
+// 🚀 点击进入
+function enter() {
+    if (isEntered) return;
+    isEntered = true;
 
-        setTimeout(() => {
-            video.src = videos[current];
-            video.play().catch(()=>{});
-            video.style.opacity = 1;
-        }, 1000);
+    let cover = document.getElementById("cover");
+    let layer1 = document.getElementById("bgSlideshow1");
+    let music = document.getElementById("music");
 
-        setTimeout(switchVideo, 10000);
+    // 首张图片展示（修复：强制包裹单引号保护路径）
+    if (layer1) {
+        let firstImg = getNextImage();
+        layer1.style.backgroundImage = "url('" + firstImg + "')";
+        layer1.style.opacity = "1";
+    }
+
+    if (music) {
+        music.play().catch(function(e) { console.log("音乐播放受阻"); });
+    }
+
+    if (cover) {
+        cover.style.opacity = "0";
+        setTimeout(() => { cover.remove(); }, 800);
+    }
+
+    setTimeout(playSubtitles, 1000);
+    slideshowInterval = setInterval(switchBgImage, 6000); 
+}
+
+// 🖼️ 双层交替无缝切换逻辑（修复：彻底包裹单引号，防止文件名括号导致的切图黑屏缺陷）
+function switchBgImage() {
+    let layer1 = document.getElementById("bgSlideshow1");
+    let layer2 = document.getElementById("bgSlideshow2");
+    let nextImg = getNextImage();
+
+    if (activeLayer === 1) {
+        layer2.style.backgroundImage = "url('" + nextImg + "')";
+        layer2.style.opacity = "1";
+        layer1.style.opacity = "0";
+        activeLayer = 2;
+    } else {
+        layer1.style.backgroundImage = "url('" + nextImg + "')";
+        layer1.style.opacity = "1";
+        layer2.style.opacity = "0";
+        activeLayer = 1;
     }
 }
 
+// 字幕
 let subtitles = [
-"Un amour qui traverse les océans",
-"一段跨越海洋的爱情",
-"在世界的两端",
-"我们各自生活着",
-"直到命运让我们相遇 ✈️",
-"这一刻，一切改变",
-"跨越东与西马",
-"只为与你相遇 ❤️"
+    "Un amour qui traverse les océans", "一段跨越海洋的爱情", "在世界的两端",
+    "我们各自生活着", "直到命运让我们相遇 ✈️", "这一刻，一切改变",
+    "跨越东与西马", "只为与你相遇 ❤️"
 ];
-
 let index = 0;
 
 function playSubtitles() {
     let el = document.getElementById("subtitle");
-
-    if (index < subtitles.length) {
+    if (el && index < subtitles.length) {
         el.innerHTML = subtitles[index];
         el.style.opacity = 1;
-
         setTimeout(() => {
             el.style.opacity = 0;
             index++;
@@ -320,45 +383,49 @@ function playSubtitles() {
     }
 }
 
-var targetDate = new Date("2026-05-31T18:30:00").getTime();
-
+// 倒计时
+var targetDate = new Date("2026-10-03T18:30:00").getTime();
 setInterval(function() {
     var now = new Date().getTime();
     var diff = targetDate - now;
     var days = Math.floor(diff / (1000*60*60*24));
-    document.getElementById("countdown").innerHTML = days + " 天";
-},1000);
+    let countEl = document.getElementById("countdown");
+    if (countEl) { countEl.innerHTML = days + " 天"; }
+}, 1000);
 
+// 相册滑动与灯箱（已强化移动端滑屏防误触算法）
 let slider = document.querySelector('.slider');
+let isDown = false; let startX; let scrollLeft; let dragMoved = false; 
 
-let isDown = false;
-let startX;
-let scrollLeft;
-
-slider.addEventListener('mousedown', (e) => {
-    isDown = true;
-    slider.style.cursor = 'grabbing';
-    startX = e.pageX - slider.offsetLeft;
-    scrollLeft = slider.scrollLeft;
-});
-
-slider.addEventListener('mouseleave', () => {
-    isDown = false;
-    slider.style.cursor = 'grab';
-});
-
-slider.addEventListener('mouseup', () => {
-    isDown = false;
-    slider.style.cursor = 'grab';
-});
-
+slider.addEventListener('mousedown', (e) => { isDown = true; dragMoved = false; slider.style.cursor = 'grabbing'; startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft; });
+slider.addEventListener('mouseleave', () => { isDown = false; slider.style.cursor = 'grab'; });
+slider.addEventListener('mouseup', () => { isDown = false; slider.style.cursor = 'grab'; });
 slider.addEventListener('mousemove', (e) => {
     if(!isDown) return;
-    e.preventDefault();
     const x = e.pageX - slider.offsetLeft;
     const walk = (x - startX) * 2;
-    slider.scrollLeft = scrollLeft - walk;
+    if (Math.abs(x - startX) > 10) { dragMoved = true; e.preventDefault(); slider.scrollLeft = scrollLeft - walk; }
 });
+
+// 手机端手指活动防误开大图
+slider.addEventListener('touchstart', (e) => { startX = e.touches[0].pageX; dragMoved = false; }, { passive: true });
+slider.addEventListener('touchmove', (e) => { 
+    const x = e.touches[0].pageX;
+    if (Math.abs(x - startX) > 10) { dragMoved = true; } 
+}, { passive: true });
+
+const imgs = document.querySelectorAll('.slider img');
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+
+imgs.forEach(img => {
+    img.addEventListener('click', function() {
+        if (dragMoved) return; 
+        lightboxImg.src = this.src;
+        lightbox.classList.add('active');
+    });
+});
+function closeLightbox() { lightbox.classList.remove('active'); }
 </script>
 
 </body>
